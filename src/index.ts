@@ -1,11 +1,8 @@
-import { swipe$ } from './swipe';
+import { submitSlider } from "./slider";
+import { fromEvent } from "rxjs";
 
-swipe$
-    .subscribe((direction) => {
-
-        if(direction > 0) {
-            console.log('Swipe right');
-            return;
-        }
-        console.log('Swipe left');
+const resultBtn = document.querySelector('#send-result') as HTMLButtonElement;
+submitSlider(fromEvent(resultBtn, 'click'))
+    .subscribe((value) => {
+        console.log(value)
     })
