@@ -14,14 +14,16 @@ function drag(
 ) {
     return source1$.pipe(
         concatMap((start) => {
-            console.log('Start')
+            console.log('Start');
+            const x = start.clientX - box.offsetLeft;
+            const y = start.clientY - box.offsetTop;
             return source2$.pipe(
                 map((move) => {
                     move.preventDefault();
-                    console.log(move.clientX - start.clientX, move.clientY - start.clientY)
+                    console.log(move.clientX, move.clientY)
                     return {
-                        left: move.clientX - start.clientX,
-                        top: move.clientY - start.clientY,
+                        left: move.clientX - x,
+                        top: move.clientY - y,
                     }
                 }),
                 tap(({top, left}) => {
