@@ -1,61 +1,76 @@
-// import { Observable } from 'rxjs'
+import { defer, from, fromEvent, generate, iif, of, range, timer } from "rxjs";
+import { concatAll, map, pluck, switchMap, take, toArray } from "rxjs/operators";
+import { ajax } from "rxjs/ajax";
+
+// const sequence$ = of(1, 2, 3, 4);
 //
-// const sequence$ = new Observable<number>((subscriber: any) => {
-//     let cursor = 1;
-//     console.log('init observable');
-//     const intervalId = setInterval(() => {
-//         subscriber.next(cursor++);
-//         if (cursor === 10) {
-//             clearInterval(intervalId);
-//             subscriber.complete();
-//         }
-//     }, 1000);
+// sequence$.subscribe((v) => {
+//     console.log(v);
+// });
+
+
+// const sequence$ = from(
+//     fetch('http://learn.javascript.ru/courses/groups/api/participants?key=1glj803')
+//         .then((res) => res.json())
+// );
+// const sequence$ = ajax(
+//     'http://learn.javascript.ru/courses/groups/api/participants?key=1glj803'
+// );
+//
+// sequence$
+//     .pipe(
+//         map((res) => res.response), // [{}, {}, {}]
+//         concatAll(), // {}, {}, {}, {},
+//         map((user: any) => `${user.firstName} ${user.surname}`),  // '', ''
+//         toArray() // ['', '', '']
+//     )
+//     .subscribe((v) => {
+//         console.log(v);
+//     });
+
+// range(3, 4)
+//     .subscribe((v) => {
+//         console.log(v);
+//     })
+
+// timer(4000, 1000)
+//     // .pipe(
+//     //     map(() => ({
+//     //         name: 'Ihor'
+//     //     }))
+//     // )
+//     .subscribe((v) => {
+//         console.log(v);
+//     })
+
+
+// generate(1, (v) => v < 4, (v) => v + 0.5)
+//     .subscribe((v) => {
+//         console.log(v);
+//     })
+
+const random = Math.round(Math.random() * 10);
+// iif(() => {
+//     return random < 5;
+// }, of(`First, number is ${random}`), of(`Second, number is ${random}`))
+//     .subscribe((v) => {
+//         console.log(v)
+//     })
+
+// defer(() => {
+//     return random >= 5
+//         ? random >= 8
+//             ? of(`First, number is ${random}`)
+//             : of(`Second, number is ${random}`)
+//         : of(`Third, number is ${random}`)
 // })
-//
-//
-// setTimeout(() => {
-//     sequence$.subscribe((v: number) => {
-//         console.log('Sub 1', v)
-//     }, (_err) => {
-//     }, () => {
-//         console.log('complete')
+//     .subscribe((v) => {
+//         console.log(v);
 //     })
-// }, 5000)
-//
-// setTimeout(() => {
-//     sequence$.subscribe((v: number) => {
-//         console.log('Sub 2', v)
-//     }, (_err) => {
-//     }, () => {
-//         console.log('complete')
+// const el = document.querySelector('input') as HTMLInputElement
+// fromEvent<KeyboardEvent>(el, 'input')
+//     .pipe(take(3), pluck('target', 'value'))
+//     .subscribe((e: any) => {
+//         console.log(e);
 //     })
-// }, 7000)
-
-
-import { Observable } from "rxjs";
-import { pluck } from "rxjs/operators";
-
-const socket: WebSocket = new WebSocket('wss://echo.websocket.org');
-
-const sequence$ = new Observable((subscriber) => {
-    socket.addEventListener('message', (e) => subscriber.next(e))
-    return () => socket.close();
-});
-
-socket.addEventListener('open', () => {
-    console.log('socket opened');
-    let count = 0;
-    setInterval(() => {
-        socket.send((count++).toString())
-    }, 1000)
-})
-
-const subscription = sequence$.pipe(pluck('data')).subscribe((v) => {
-    console.log('Sub 1 => ', v)
-})
-
-setTimeout(() => {
-    sequence$.pipe(pluck('data')).subscribe((v) => {
-        console.log('Sub 2 => ', v)
-    })
-}, 10000)
+//
