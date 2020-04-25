@@ -1,5 +1,5 @@
 import { combineLatest, fromEvent, Observable } from "rxjs";
-import { map, pluck, startWith, tap, withLatestFrom } from "rxjs/operators";
+import { distinctUntilChanged, map, pluck, startWith, tap, withLatestFrom } from "rxjs/operators";
 
 const quality$ = getValue(fromEvent($('#quality').slider(), 'change'), redrawSlider);
 const rating$ = getValue(fromEvent($('#rating').slider(), 'change'), redrawSlider);
@@ -9,7 +9,8 @@ export function submitSlider(source$: Observable<any>) {
     return source$
         .pipe(
             withLatestFrom(slider(quality$, rating$, actual$)),
-            pluck(1)
+            pluck(1),
+            distinctUntilChanged()
         )
 }
 
