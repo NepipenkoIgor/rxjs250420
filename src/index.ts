@@ -33,12 +33,13 @@
 
 
 import { Observable } from "rxjs";
+import { pluck } from "rxjs/operators";
 
 const socket: WebSocket = new WebSocket('wss://echo.websocket.org');
 
 const sequence$ = new Observable((subscriber) => {
     socket.addEventListener('message', (e) => subscriber.next(e))
-    return socket.close();
+    return () => socket.close();
 });
 
 socket.addEventListener('open', () => {
@@ -49,8 +50,12 @@ socket.addEventListener('open', () => {
     }, 1000)
 })
 
-const subscription = sequence$.subscribe((v) => {
-    console.log(v)
+const subscription = sequence$.pipe(pluck('data')).subscribe((v) => {
+    console.log('Sub 1 => ', v)
 })
 
-// subscription.unsubscribe()
+setTimeout(() => {
+    sequence$.pipe(pluck('data')).subscribe((v) => {
+        console.log('Sub 2 => ', v)
+    })
+}, 10000)
