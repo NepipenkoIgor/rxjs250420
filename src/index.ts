@@ -1,11 +1,7 @@
-import { swipe$ } from './swipe';
+import { search$ } from './live-search';
 
-swipe$
-    .subscribe((direction) => {
-
-        if(direction > 0) {
-            console.log('Swipe right');
-            return;
-        }
-        console.log('Swipe left');
-    })
+const containerRef = document.querySelector('.container') as HTMLDivElement;
+search$
+    .subscribe((htmlString) => {
+        containerRef.innerHTML = htmlString;
+    });

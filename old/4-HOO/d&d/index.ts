@@ -24,23 +24,23 @@
 // }, 5000)
 
 
-// import { fromEvent, interval, of } from "rxjs";
-// import { concatMap, map, mergeAll, mergeMap, pluck, switchMap, exhaust, exhaustMap } from "rxjs/operators";
-// import { ajax } from "rxjs/ajax";
-//
-// const inputRef = document.querySelector('input') as HTMLInputElement;
-// const source$ = fromEvent(inputRef, 'input')
-//     .pipe(
-//         pluck('target', 'value'),
-//         exhaustMap((v) => {
-//             return ajax(`http://learn.javascript.ru/courses/groups/api/participants?key=1glj803&text=${v}`);
-//         })
-//         // mergeMap = map + mergeAll;
-//         // switchMap = map + switchAll;
-//         // сoncatMap = map + сoncatAll;
-//         // exhaustMap = map + exhaust;
-//     );
-//
+import { fromEvent, interval, of } from "rxjs";
+import { concatMap, map, mergeAll, mergeMap, pluck, switchMap, exhaust, exhaustMap } from "rxjs/operators";
+import { ajax } from "rxjs/ajax";
+
+const inputRef = document.querySelector('input') as HTMLInputElement;
+const source$ = fromEvent(inputRef, 'input')
+    .pipe(
+        pluck('target', 'value'),
+        exhaustMap((v) => {
+            return ajax(`http://learn.javascript.ru/courses/groups/api/participants?key=1glj803&text=${v}`);
+        })
+        // mergeMap = map + mergeAll;
+        // switchMap = map + switchAll;
+        // сoncatMap = map + сoncatAll;
+        // exhaustMap = map + exhaust;
+    );
+
 // source$.subscribe((v) => {
 //     console.log(v);
 // })
