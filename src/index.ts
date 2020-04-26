@@ -1,43 +1,44 @@
-import './component1';
-import './component2';
-import { observable, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { AsyncSubject, Observable } from "rxjs";
+import { ajax } from "rxjs/ajax";
 
-// Subject = Observable + Observer
-
-// import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
+// const sequence$ = new AsyncSubject();
 //
-// const sequence$$ = new ReplaySubject();
-// sequence$$.next('Hi');
-// sequence$$.next('RxJS');
-// sequence$$.next('Awesome');
-// const subscription = sequence$$.subscribe((v) => {
+// sequence$.subscribe((v) => {
 //     console.log('Sub 1', v)
-// })
-// subscription.unsubscribe();
+// });
 //
-// sequence$$.next('All');
-// sequence$$.next('RxJS');
-// sequence$$.next('Awesome');
-// sequence$$.subscribe((v) => {
-//     console.log('Sub 2', v)
-// })
-// sequence$$.next('RxJS');
-// sequence$$.next('Awesome');
+// sequence$.next('RxJS');
+// sequence$.next('Awesome');
+//
+// sequence$.complete();
+//
+//
+// setTimeout(() => {
+//     sequence$.subscribe((v) => {
+//         console.log('Sub 2', v)
+//     });
+// }, 5000)
 
 
-// class Unsubscriber {
-//     protected sequence$$ = new Subject()
-//
-//     ngOnDestroy() {
-//         this.sequence$$.next(true);
-//         this.sequence$$.complete();
-//     }
-// }
-//
-//
-// class Component extends Unsubscriber {
-//     ngOnInit() {
-//         observable.pipe(takeUntil(this.sequence$$))
-//     }
-// }
+function getUsers(url: string) {
+    let subject: AsyncSubject<any>;
+    return new Observable((subscriber) => {
+        if (!subject) {
+            subject = new AsyncSubject();
+            ajax(url).subscribe(subject);
+        }
+        return subject.subscribe(subscriber)
+    })
+}
+
+const users = getUsers('http://learn.javascript.ru/courses/groups/api/participants?key=1glj803')
+
+users.subscribe((users) => {
+    console.log(users);
+})
+
+setTimeout(() => {
+    users.subscribe((users) => {
+        console.log(users);
+    })
+}, 7000)
