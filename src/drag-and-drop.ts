@@ -20,8 +20,8 @@ function drag(
                     move.preventDefault();
                     console.log(move.clientX - start.clientX, move.clientY - start.clientY)
                     return {
-                        left: move.clientX - start.clientX,
-                        top: move.clientY - start.clientY,
+                        left: move.clientX - start.offsetX,
+                        top: move.clientY - start.offsetY,
                     }
                 }),
                 tap(({top, left}) => {
