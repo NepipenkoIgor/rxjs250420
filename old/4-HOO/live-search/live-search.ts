@@ -65,3 +65,4 @@ function createRow(htmlStrings: string[]) {
 
 // 1 , 12, 123, 1234  last 1234
 // 4 - 5 - 6
+// 1s - 4s
