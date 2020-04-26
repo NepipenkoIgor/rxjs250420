@@ -1,44 +1,13 @@
-import { AsyncSubject, Observable } from "rxjs";
-import { ajax } from "rxjs/ajax";
+import { Form } from "./form";
 
-// const sequence$ = new AsyncSubject();
-//
-// sequence$.subscribe((v) => {
-//     console.log('Sub 1', v)
-// });
-//
-// sequence$.next('RxJS');
-// sequence$.next('Awesome');
-//
-// sequence$.complete();
-//
-//
-// setTimeout(() => {
-//     sequence$.subscribe((v) => {
-//         console.log('Sub 2', v)
-//     });
-// }, 5000)
+const form1 = document.querySelector('.first-form') as HTMLFormElement;
+const form2 = document.querySelector('.second-form') as HTMLFormElement;
 
+form2.hidden = true;
 
-function getUsers(url: string) {
-    let subject: AsyncSubject<any>;
-    return new Observable((subscriber) => {
-        if (!subject) {
-            subject = new AsyncSubject();
-            ajax(url).subscribe(subject);
-        }
-        return subject.subscribe(subscriber)
-    })
-}
+new Form(form1);
 
-const users = getUsers('http://learn.javascript.ru/courses/groups/api/participants?key=1glj803')
-
-users.subscribe((users) => {
-    console.log(users);
-})
-
-setTimeout(() => {
-    users.subscribe((users) => {
-        console.log(users);
-    })
-}, 7000)
+setTimeout(()=>{
+    form2.hidden = false;
+    new Form(form2);
+}, 5000)
