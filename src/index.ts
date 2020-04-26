@@ -1,79 +1,51 @@
-// console.log('start');
-// setTimeout(()=>console.log('t1'));
-// setTimeout(()=>console.log('t2'));
-// Promise.resolve().then(()=>console.log('p1'));
-// Promise.resolve().then(()=>console.log('p2'));
-// console.log('end')
-//
-//
-// /*
-//     start -----  t1 ----- t2
-//     end
-//     ----
-//     p1
-//     p2
-//  */
+import { animationFrame } from "rxjs/internal/scheduler/animationFrame";
+import { defer, interval } from "rxjs";
+import { map, takeWhile, tap } from "rxjs/operators";
 
-// import { asyncScheduler, of } from "rxjs";
-// import { asap } from "rxjs/internal/scheduler/asap";
-// import { queue } from "rxjs/internal/scheduler/queue";
-//
-// console.log('start');
-// of(1, 2, 3, 4, 5 )
-//     .subscribe((v) => {
-//         console.log(v);
-//     });
-// console.log('end');
+const ball = document.querySelector('div') as HTMLDivElement;
 
-
-import { combineLatest, from, of, Subject } from "rxjs";
-import { map, observeOn, subscribeOn, take, tap } from "rxjs/operators";
-import { asap } from "rxjs/internal/scheduler/asap";
-import { queue } from "rxjs/internal/scheduler/queue";
-import { async } from "rxjs/internal/scheduler/async";
-
-// const a$ = from([1, 2], asap);
-// const b$ = of(10);
-//
-// const c$ = combineLatest([a$, b$])
-//     .pipe(
-//         map(([x, y]) => x + y)
-//     );
-//
-//
-// c$.subscribe((sum)=>{
-//     console.log(sum)
-// })
-
-
-// const signal: Subject<number> = new Subject();
-// const calc = (count: number) => console.log('do some calc with ', count);
-// let count = 1;
-// console.log('start');
-// signal
-//     .pipe(
-//         observeOn(queue),
-//         take(1600)
-//     )
-//     .subscribe((count: number) => {
-//         calc(count);
-//         signal.next(count++)
-//     })
-// signal.next(count++)
-// console.log('stop');
-
-
-console.log('start');
-setTimeout(() => console.log('It will be run after current Macrotask'))
-
-of(1, 2, 3)
-    .pipe(
-        tap((v) => console.log('tap', v)),
-        observeOn(async)
-    )
-    .subscribe((v) => {
-        console.log('Value', v);
-        Promise.resolve().then(() => console.log('Microtask value', v))
-        setTimeout(() => console.log('Macrotask value', v))
+function msElapsed(schedule = animationFrame) {
+    return defer(() => {
+        const start = schedule.now();
+        return interval(0, schedule)
+            .pipe(map(() => schedule.now() - start))
     })
-console.log('end');
+}
+
+function duration(ms: number, schedule = animationFrame) {
+    return msElapsed(schedule)
+        .pipe(
+            map((time) => {
+                return time / ms;
+            }),
+            takeWhile((percentage) => percentage <= 1)
+        )
+}
+
+function distance(px: number) {
+    return (percentage: number) => percentage * px;
+}
+
+const animationFn = (percentage: number) => {
+    return Math.sin(-13 * (percentage + 1) * Math.PI * 2) * Math.pow(2, -10 * percentage) + 1;
+}
+
+
+function animateDown(element: HTMLElement) {
+    return duration(20000)
+        .pipe(
+            map(animationFn),
+            map(distance(100)),
+            tap((frame) => {
+                element.style.transform = `translate3d(0,${frame}px,0)`
+            })
+        )
+}
+
+
+animateDown(ball)
+    .subscribe(() => {
+    }, (err) => {
+    }, () => {
+        console.log('animation complete')
+    })
