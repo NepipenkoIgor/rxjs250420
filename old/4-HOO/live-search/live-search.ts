@@ -1,8 +1,8 @@
 // https://api.github.com/search/repositories?q=
 
-import { fromEvent } from "rxjs";
+import { EMPTY, fromEvent } from "rxjs";
 import {
-    bufferCount,
+    bufferCount, catchError,
     concatAll,
     debounceTime,
     distinctUntilChanged,
@@ -40,9 +40,14 @@ export const search$ = fromEvent<any>(inputRef, 'input')
                         return resultStr += createRow(htmlStrings)
                     }, ''),
                     map((htmlString: string)=> htmlString.trim()
-                        .replace(/\s+(<)/g, '<'))
+                        .replace(/\s+(<)/g, '<')),
+                    catchError((err) => {
+                        // console.log(err);
+                        return EMPTY //of('N')
+                    })
                 )
-        })
+        }),
+
     )
 
 function createCard({name, description, owner: {avatar_url}}: IResult) {
