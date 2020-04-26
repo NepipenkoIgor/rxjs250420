@@ -1,54 +1,43 @@
-import { EMPTY, interval, of, throwError, zip } from "rxjs";
-import { catchError, delay, map, retry, retryWhen, switchMap, tap } from "rxjs/operators";
+import './component1';
+import './component2';
+import { observable, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
-const sequence1$ = interval(1000);
-const sequence2$ = of('1', '2', '3', 4, '5', '6', '7');
-const sequence$ = zip(sequence1$, sequence2$);
+// Subject = Observable + Observer
 
-sequence$
-    .pipe(
-        switchMap(([, y]) => {
-            return of(y)
-                .pipe(
-                    map((value) => {
-                        return (value as any).toUpperCase()
-                    }),
-                    tap(()=>{
-                        console.log('next after map')
-                    }),
-                    catchError((err) => {
-                        // console.log(err);
-                        return EMPTY //of('N')
-                    })
-                )
-        }),
-    )
-    .subscribe((v) => {
-        console.log(v);
-    }, (err) => {
-        console.log('ERR CB', err)
-    }, () => {
-        console.log('complete')
-    })
-
-
-of()
-    .subscribe((v) => {
-        console.log(3333, v)
-    }, (err) => {
-    }, () => {
-        console.log('complete 1111')
-    })
-
-
-// const pingEpic = action$ => action$.pipe(
-//     ofType(GetProductsPending),
-//     switchMap(() => axios.pipe(
-//         map(()=>GetProductsSuccess)
-//         catchError((err) => {
-//             // console.log(err);
-//             return EMPTY //of('N')
-//         })
-//     ))
+// import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
 //
-// );
+// const sequence$$ = new ReplaySubject();
+// sequence$$.next('Hi');
+// sequence$$.next('RxJS');
+// sequence$$.next('Awesome');
+// const subscription = sequence$$.subscribe((v) => {
+//     console.log('Sub 1', v)
+// })
+// subscription.unsubscribe();
+//
+// sequence$$.next('All');
+// sequence$$.next('RxJS');
+// sequence$$.next('Awesome');
+// sequence$$.subscribe((v) => {
+//     console.log('Sub 2', v)
+// })
+// sequence$$.next('RxJS');
+// sequence$$.next('Awesome');
+
+
+// class Unsubscriber {
+//     protected sequence$$ = new Subject()
+//
+//     ngOnDestroy() {
+//         this.sequence$$.next(true);
+//         this.sequence$$.complete();
+//     }
+// }
+//
+//
+// class Component extends Unsubscriber {
+//     ngOnInit() {
+//         observable.pipe(takeUntil(this.sequence$$))
+//     }
+// }
